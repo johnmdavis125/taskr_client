@@ -1,25 +1,51 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
 
-function App() {
+export default function App() {
+
+  const [newTask, updateNewTask] = useState({
+    title: '',
+    completed: false
+  });
+  
+  const [allTasks, updateAllTasks] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/tasks');
+        const data = await response.json(); 
+        updateAllTasks([...data]);
+        console.log(data);
+      } catch(error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Hello World!</h1>
+
+    <form>
+      <div>
+        <label htmlFor='newTask'>Enter a new Task</label>
+        <input type='text' id='newTask' name='newTask'></input>
+      </div>
+    </form>
+
+    
+    {allTasks.length > 0 &&
+    allTasks.map((newTask) => {
+      return (
+        <h4>{newTask.title}</h4>
+      )
+    })
+  }
+
     </div>
+    
   );
 }
 
-export default App;
